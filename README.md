@@ -3,7 +3,7 @@
 A plane projection, useful for blazingly fast approximate distance calculations.
 Based on WGS84 ellipsoid model of the Earth, plane projection provides 0.1% precision
 on distances under 500km at latitudes up to the 65°.
-See https://blog.mapbox.com/fast-geodesic-approximations-with-cheap-ruler-106f229ad016
+See the [article about Cheap Ruler](https://blog.mapbox.com/fast-geodesic-approximations-with-cheap-ruler-106f229ad016)
 for more details about the principle and formulas behind.
 
 Comparing to another Rust crates that provide the same functionality,
