@@ -3,7 +3,8 @@ const EQUATORIAL_RADIUS: f64 = 6378137.0;
 const FLATTENING: f64 = 1.0 / 298.257223563;
 const SQUARED_ECCENTRICITY: f64 = FLATTENING * (2.0 - FLATTENING);
 
-type LatLon = (f64, f64);
+/// A coordinate in (latitude, longitude) format
+pub type LatLon = (f64, f64);
 
 /// A plane projection, useful for blazingly fast approximate distance calculations.
 /// Based on WGS84 ellipsoid model of the Earth, plane projection provides 0.1% precision
@@ -56,6 +57,7 @@ impl PlaneProj {
 
 /// Returns the IEEE 754-2008 floating-point remainder of the division x / y,
 /// thus normalizing the x in range [-y/2.0, y/2.0]
+#[inline(always)]
 fn remainder(x: f64, y: f64) -> f64 {
     x - y * (x / y).round()
 }
