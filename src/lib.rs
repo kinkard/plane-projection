@@ -13,16 +13,18 @@ pub type LatLon = (f64, f64);
 /// for more details about the principle and formulas behind.
 ///
 /// ```
-/// let proj = plane_proj::PlaneProj::new(55.65);
+/// use plane_projection::PlaneProjection;
+///
+/// let proj = PlaneProjection::new(55.65);
 /// let distance = proj.distance(&(55.704141722528554, 13.191304107330561), &(55.60330902847681, 13.001973666557435));
 /// assert_eq!(distance as u32, 16373);
 /// ```
-pub struct PlaneProj {
+pub struct PlaneProjection {
     lon_scale: f64,
     lat_scale: f64,
 }
 
-impl PlaneProj {
+impl PlaneProjection {
     /// Creates a plane projection to the Earth at provided latitude
     pub fn new(latitude: f64) -> Self {
         // Based on https://en.wikipedia.org/wiki/Earth_radius#Meridional
@@ -78,7 +80,7 @@ mod tests {
     #[test]
     fn distance_test() {
         // From Lund C to Malmo C
-        let proj = PlaneProj::new(55.65);
+        let proj = PlaneProjection::new(55.65);
         assert_eq!(
             proj.distance(
                 &(55.704141722528554, 13.191304107330561),
@@ -87,7 +89,7 @@ mod tests {
             16373
         );
 
-        let proj = PlaneProj::new(51.05);
+        let proj = PlaneProjection::new(51.05);
         assert_eq!(
             proj.distance(&(50.823194, 6.186389), &(51.301389, 6.953333)) as u32,
             75646

@@ -1,8 +1,8 @@
 [package]
-name = "plane-proj"
+name = "plane-projection"
 description = "Zero-dependency fact approximate distance on Earth calculation"
 version = "0.1.0"
-repository = "https://github.com/kinkard/plane-proj"
+repository = "https://github.com/kinkard/plane-projection"
 readme = "README.md"
 include = ["**/*.rs"]
 keywords = ["geo", "maps"]
