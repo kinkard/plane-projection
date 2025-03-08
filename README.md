@@ -16,7 +16,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-plane-projection = "0.1"
+plane-projection = "0.2"
 ```
 
 ## Example
