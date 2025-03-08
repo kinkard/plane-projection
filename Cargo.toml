@@ -1,14 +1,14 @@
 [package]
 name = "plane-projection"
+version = "0.2.0"
+edition = "2024"
+rust-version = "1.85"
 description = "Zero-dependency fact approximate distance on Earth calculation"
-version = "0.1.0"
-repository = "https://github.com/kinkard/plane-projection"
 readme = "README.md"
-include = ["**/*.rs"]
-keywords = ["geo", "maps"]
-edition = "2021"
-authors = ["Stepan Kizim <stsiapan.kizim@gmail.com>"]
+repository = "https://github.com/kinkard/plane-projection"
 license = "MIT OR Apache-2.0"
+keywords = ["geo", "maps"]
+include = ["**/*.rs"]
 
 [dependencies]
 # No dependencies
