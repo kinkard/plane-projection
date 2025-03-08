@@ -1,6 +1,6 @@
 [package]
 name = "plane-projection"
-version = "0.2.1"
+version = "0.3.0"
 edition = "2024"
 rust-version = "1.85"
 description = "Zero-dependency fact approximate distance on Earth calculation"

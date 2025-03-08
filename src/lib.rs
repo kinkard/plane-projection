@@ -16,7 +16,7 @@ pub type LatLon = (f64, f64);
 /// use plane_projection::PlaneProjection;
 ///
 /// let proj = PlaneProjection::new(55.65);
-/// let distance = proj.distance(&(55.704141722528554, 13.191304107330561), &(55.60330902847681, 13.001973666557435));
+/// let distance = proj.distance((55.704141722528554, 13.191304107330561), (55.60330902847681, 13.001973666557435));
 /// assert_eq!(distance as u32, 16373);
 /// ```
 pub struct PlaneProjection {
@@ -44,7 +44,7 @@ impl PlaneProjection {
 
     /// Sqare distance in meters between two points in (lat, lon) format
     #[inline(always)]
-    pub fn square_distance(&self, a: &LatLon, b: &LatLon) -> f64 {
+    pub fn square_distance(&self, a: LatLon, b: LatLon) -> f64 {
         let lat_dist = (a.0 - b.0) * self.lat_scale;
         let lon_dist = remainder(a.1 - b.1, 360.0) * self.lon_scale;
         lat_dist * lat_dist + lon_dist * lon_dist
@@ -52,7 +52,7 @@ impl PlaneProjection {
 
     /// Distance in meters between two points in (lat, lon) format
     #[inline(always)]
-    pub fn distance(&self, a: &LatLon, b: &LatLon) -> f64 {
+    pub fn distance(&self, a: LatLon, b: LatLon) -> f64 {
         self.square_distance(a, b).sqrt()
     }
 }
@@ -83,15 +83,15 @@ mod tests {
         let proj = PlaneProjection::new(55.65);
         assert_eq!(
             proj.distance(
-                &(55.704141722528554, 13.191304107330561),
-                &(55.60330902847681, 13.001973666557435)
+                (55.704141722528554, 13.191304107330561),
+                (55.60330902847681, 13.001973666557435)
             ) as u32,
             16373
         );
 
         let proj = PlaneProjection::new(51.05);
         assert_eq!(
-            proj.distance(&(50.823194, 6.186389), &(51.301389, 6.953333)) as u32,
+            proj.distance((50.823194, 6.186389), (51.301389, 6.953333)) as u32,
             75646
         );
     }

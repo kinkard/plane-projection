@@ -16,7 +16,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-plane-projection = "0.2"
+plane-projection = "0.3"
 ```
 
 ## Example
@@ -25,7 +25,7 @@ plane-projection = "0.2"
 use plane_projection::PlaneProjection;
 
 let proj = PlaneProjection::new(55.65);
-let distance = proj.distance(&(55.704141722528554, 13.191304107330561), &(55.60330902847681, 13.001973666557435));
+let distance = proj.distance((55.704141722528554, 13.191304107330561), (55.60330902847681, 13.001973666557435));
 assert_eq!(distance as u32, 16373);
 ```
 
