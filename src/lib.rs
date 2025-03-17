@@ -55,6 +55,17 @@ impl PlaneProjection {
     pub fn distance(&self, a: LatLon, b: LatLon) -> f64 {
         self.square_distance(a, b).sqrt()
     }
+
+    /// Heading (azimuth) in degrees from point `a` to point `b` in a clockwise direction in range [0.0, 360.0)
+    /// where 0.0 is North, 90.0 is East, 180.0 is South and 270.0 is West.
+    #[inline(always)]
+    pub fn heading(&self, a: LatLon, b: LatLon) -> f32 {
+        // Using f32 calculations for better performance while maintaining sufficient precision
+        let dx = ((a.0 - b.0) * self.lat_scale) as f32;
+        let dy = (lon_diff(b.1, a.1) * self.lon_scale) as f32;
+        // Together with inverted `dx` this converts (-180, 180] `atan2` range into [0, 360) without branching
+        180.0 - dy.atan2(dx).to_degrees()
+    }
 }
 
 /// Returns the difference between two longitudes in range [-180.0, 180.0] degrees
@@ -95,7 +106,7 @@ mod tests {
         assert_eq!(
             proj.distance(
                 (55.704141722528554, 13.191304107330561),
-                (55.60330902847681, 13.001973666557435)
+                (55.60330902847681, 13.001973666557435),
             ) as u32,
             16373
         );
@@ -104,6 +115,31 @@ mod tests {
         assert_eq!(
             proj.distance((50.823194, 6.186389), (51.301389, 6.953333)) as u32,
             75646
+        );
+    }
+
+    #[test]
+    fn heading_test() {
+        let proj = PlaneProjection::new(55.65);
+        assert_eq!(proj.heading((55.70, 13.19), (55.80, 13.19)) as i32, 0);
+        assert_eq!(proj.heading((55.70, 13.19), (55.60, 13.19)) as i32, 180);
+        assert_eq!(proj.heading((55.70, 13.19), (55.70, 13.29)) as i32, 90);
+        assert_eq!(proj.heading((55.70, 13.19), (55.70, 13.09)) as i32, 270);
+
+        // From Malmo C to Lund C
+        assert_eq!(
+            proj.heading(
+                (55.60330902847681, 13.001973666557435),
+                (55.704141722528554, 13.191304107330561),
+            ) as i32,
+            46
+        );
+        assert_eq!(
+            proj.heading(
+                (55.704141722528554, 13.191304107330561),
+                (55.60330902847681, 13.001973666557435),
+            ) as i32,
+            180 + 46
         );
     }
 }
