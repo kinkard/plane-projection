@@ -18,6 +18,9 @@ pub type LatLon = (f64, f64);
 /// let proj = PlaneProjection::new(55.65);
 /// let distance = proj.distance((55.704141722528554, 13.191304107330561), (55.60330902847681, 13.001973666557435));
 /// assert_eq!(distance as u32, 16373);
+///
+/// let heading = proj.heading((55.704141722528554, 13.191304107330561), (55.60330902847681, 13.001973666557435));
+/// assert_eq!(heading as u32, 226);
 /// ```
 pub struct PlaneProjection {
     lon_scale: f64,
@@ -56,13 +59,14 @@ impl PlaneProjection {
         self.square_distance(a, b).sqrt()
     }
 
-    /// Heading (azimuth) in degrees from point `a` to point `b` in a clockwise direction in range [0.0, 360.0)
-    /// where 0.0 is North, 90.0 is East, 180.0 is South and 270.0 is West.
+    /// Heading (azimuth) in degrees from point `a` to point `b` in the range [0.0, 360.0) degrees,
+    /// measured clockwise from North: 0.0 is North, 90.0 is East, 180.0 is South and 270.0 is West.
     #[inline(always)]
     pub fn heading(&self, a: LatLon, b: LatLon) -> f32 {
-        // Using f32 calculations for better performance while maintaining sufficient precision
+        // Convert to f32 for better `atan2` performance while maintaining sufficient precision
         let dx = ((a.0 - b.0) * self.lat_scale) as f32;
         let dy = (lon_diff(b.1, a.1) * self.lon_scale) as f32;
+
         // Together with inverted `dx` this converts (-180, 180] `atan2` range into [0, 360) without branching
         180.0 - dy.atan2(dx).to_degrees()
     }
