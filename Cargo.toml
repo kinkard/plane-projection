@@ -1,6 +1,6 @@
 [package]
 name = "plane-projection"
-version = "0.3.0"
+version = "0.3.1"
 edition = "2024"
 rust-version = "1.85"
 description = "Zero-dependency fact approximate distance on Earth calculation"
@@ -8,7 +8,14 @@ readme = "README.md"
 repository = "https://github.com/kinkard/plane-projection"
 license = "MIT OR Apache-2.0"
 keywords = ["geo", "maps"]
-include = ["**/*.rs"]
+include = ["src/*.rs"]
 
 [dependencies]
 # No dependencies
+
+[dev-dependencies]
+criterion = "0.5"
+
+[[bench]]
+name = "projection_benchmarks"
+harness = false

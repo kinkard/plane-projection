@@ -46,7 +46,7 @@ impl PlaneProjection {
     #[inline(always)]
     pub fn square_distance(&self, a: LatLon, b: LatLon) -> f64 {
         let lat_dist = (a.0 - b.0) * self.lat_scale;
-        let lon_dist = remainder(a.1 - b.1, 360.0) * self.lon_scale;
+        let lon_dist = lon_diff(a.1, b.1) * self.lon_scale;
         lat_dist * lat_dist + lon_dist * lon_dist
     }
 
@@ -57,11 +57,16 @@ impl PlaneProjection {
     }
 }
 
-/// Returns the IEEE 754-2008 floating-point remainder of the division x / y,
-/// thus normalizing the x in range [-y/2.0, y/2.0]
+/// Returns the difference between two longitudes in range [-180.0, 180.0] degrees
 #[inline(always)]
-fn remainder(x: f64, y: f64) -> f64 {
-    x - y * (x / y).round()
+fn lon_diff(a: f64, b: f64) -> f64 {
+    let mut lon_diff = a - b;
+    if lon_diff > 180.0 {
+        lon_diff -= 360.0;
+    } else if lon_diff < -180.0 {
+        lon_diff += 360.0;
+    }
+    lon_diff
 }
 
 #[cfg(test)]
@@ -69,12 +74,18 @@ mod tests {
     use super::*;
 
     #[test]
-    fn reminder_test() {
-        assert_eq!(remainder(0.0, 360.0), 0.0);
-        assert_eq!(remainder(358.0, 360.0), -2.0);
-        assert_eq!(remainder(-358.0, 360.0), 2.0);
-        assert_eq!(remainder(-180.0, 360.0), 180.0);
-        assert_eq!(remainder(180.0, 360.0), -180.0);
+    fn lon_diff_test() {
+        assert_eq!(lon_diff(0.0, 0.0), 0.0);
+        assert_eq!(lon_diff(100.0, 0.0), 100.0);
+        assert_eq!(lon_diff(100.0, -100.0), -160.0);
+        assert_eq!(lon_diff(177.0, -177.0), -6.0);
+        assert_eq!(lon_diff(358.0, 0.0), -2.0);
+        assert_eq!(lon_diff(0.0, 358.0), 2.0);
+        assert_eq!(lon_diff(0.0, -180.0), 180.0);
+        assert_eq!(lon_diff(1.0, -180.0), -179.0);
+        assert_eq!(lon_diff(180.0, 0.0), 180.0);
+        assert_eq!(lon_diff(180.0, -1.0), -179.0);
+        assert_eq!(lon_diff(180.0, -180.0), 0.0);
     }
 
     #[test]
