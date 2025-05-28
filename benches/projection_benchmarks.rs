@@ -1,5 +1,6 @@
-use criterion::{Criterion, black_box, criterion_group, criterion_main};
+use criterion::{Criterion, criterion_group, criterion_main};
 use plane_projection::PlaneProjection;
+use std::hint::black_box;
 
 fn bench_plane_projection_distance(c: &mut Criterion) {
     c.bench_function("plane_projection_distance", |b| {

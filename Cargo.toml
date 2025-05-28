@@ -14,7 +14,7 @@ include = ["src/*.rs"]
 # No dependencies
 
 [dev-dependencies]
-criterion = "0.5"
+criterion = { version = "0.6", default-features = false }
 
 [[bench]]
 name = "projection_benchmarks"
