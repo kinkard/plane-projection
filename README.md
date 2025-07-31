@@ -25,10 +25,13 @@ plane-projection = "0.3"
 use plane_projection::PlaneProjection;
 
 let proj = PlaneProjection::new(55.65);
-let distance = proj.distance((55.704141722528554, 13.191304107330561), (55.60330902847681, 13.001973666557435));
+let distance = proj.distance((55.7041417, 13.1913041), (55.6033090, 13.0019737));
 assert_eq!(distance as u32, 16373);
 
-let heading = proj.heading((55.704141722528554, 13.191304107330561), (55.60330902847681, 13.001973666557435));
+let distance = proj.distance_to_segment((55.6781798, 13.0587896), ((55.7041417, 13.1913041), (55.6033090, 13.0019737)));
+assert_eq!(distance as u32, 3615);
+
+let heading = proj.heading((55.7041417, 13.1913041), (55.6033090, 13.0019737));
 assert_eq!(heading as u32, 226);
 ```
 
