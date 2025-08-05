@@ -30,8 +30,9 @@ pub struct PlaneProjection {
 impl PlaneProjection {
     /// Creates a plane projection to the Earth at provided latitude.
     pub fn new(latitude: f64) -> Self {
+        // `cosf32` gives sufficient precision (adds approx. 0.0001 meter error) with much better performance
+        let cos_lat = (latitude as f32).to_radians().cos() as f64;
         // Based on https://en.wikipedia.org/wiki/Earth_radius#Meridional
-        let cos_lat = latitude.to_radians().cos();
         let w2 = 1.0 / (1.0 - SQUARED_ECCENTRICITY * (1.0 - cos_lat * cos_lat));
         let w = w2.sqrt();
 
@@ -121,6 +122,7 @@ mod tests {
 
     const MALMO_C: LatLon = (55.60330902847681, 13.001973666557435);
     const LUND_C: LatLon = (55.704141722528554, 13.191304107330561);
+    const STOCKHOLM_C: LatLon = (59.33036105663399, 18.058682977850953);
 
     #[test]
     fn lon_diff_test() {
@@ -140,13 +142,16 @@ mod tests {
     #[test]
     fn distance_test() {
         let proj = PlaneProjection::new(55.65);
-        assert_eq!(proj.distance(MALMO_C, LUND_C,) as u32, 16373);
+        assert_eq!(proj.distance(MALMO_C, LUND_C).round() as u32, 16374);
 
-        let proj = PlaneProjection::new(51.05);
-        assert_eq!(
-            proj.distance((50.823194, 6.186389), (51.301389, 6.953333)) as u32,
-            75646
-        );
+        // Geodesic distance is between Malmo and Stockholm is 513_861m and the best precision from
+        // the plane projection is when halfway latitude is used.
+        let proj = PlaneProjection::new((MALMO_C.0 + STOCKHOLM_C.0) * 0.5);
+        assert_eq!(proj.distance(MALMO_C, STOCKHOLM_C).round() as u32, 514_168); // 0.06% error
+        let proj = PlaneProjection::new(MALMO_C.0);
+        assert_eq!(proj.distance(MALMO_C, STOCKHOLM_C).round() as u32, 523_230); // 1.8% error
+        let proj = PlaneProjection::new(STOCKHOLM_C.0);
+        assert_eq!(proj.distance(MALMO_C, STOCKHOLM_C).round() as u32, 505_217); // 1.7% error
     }
 
     #[test]
