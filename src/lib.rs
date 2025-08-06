@@ -1,4 +1,4 @@
-// Values that define WGS84 ellipsoid model of the Earth
+// Values that define WGS84 ellipsoid model of the Earth in meters.
 const EQUATORIAL_RADIUS: f64 = 6378137.0;
 const FLATTENING: f64 = 1.0 / 298.257223563;
 const SQUARED_ECCENTRICITY: f64 = FLATTENING * (2.0 - FLATTENING);
@@ -23,7 +23,9 @@ pub type LatLon = (f64, f64);
 /// assert_eq!(heading as u32, 226);
 /// ```
 pub struct PlaneProjection {
+    /// Meters per degree of longitude.
     lon_scale: f64,
+    /// Meters per degree of latitude.
     lat_scale: f64,
 }
 
@@ -32,11 +34,10 @@ impl PlaneProjection {
     pub fn new(latitude: f64) -> Self {
         // `cosf32` gives sufficient precision (adds approx. 0.0001 meter error) with much better performance
         let cos_lat = (latitude as f32).to_radians().cos() as f64;
+
         // Based on https://en.wikipedia.org/wiki/Earth_radius#Meridional
         let w2 = 1.0 / (1.0 - SQUARED_ECCENTRICITY * (1.0 - cos_lat * cos_lat));
         let w = w2.sqrt();
-
-        // multipliers for converting longitude and latitude degrees into distance
         let lon_scale = (EQUATORIAL_RADIUS * w * cos_lat).to_radians(); // based on normal radius of curvature
         let lat_scale = (EQUATORIAL_RADIUS * w * w2 * (1.0 - SQUARED_ECCENTRICITY)).to_radians(); // based on meridonal radius of curvature
 
