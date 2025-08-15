@@ -22,6 +22,7 @@ pub type LatLon = (f64, f64);
 /// let heading = proj.heading((55.704141722528554, 13.191304107330561), (55.60330902847681, 13.001973666557435));
 /// assert_eq!(heading as u32, 226);
 /// ```
+#[derive(Clone)]
 pub struct PlaneProjection {
     /// Meters per degree of longitude.
     lon_scale: f64,
