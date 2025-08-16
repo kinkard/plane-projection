@@ -48,6 +48,16 @@ impl PlaneProjection {
         }
     }
 
+    /// Projects a coordinate from (latitude, longitude) to the plane projection space.
+    ///
+    /// This function is intended for low-level coordinate manipulation (like vector math) in the projection space
+    /// and should not be used unless the built-in methods like [`PlaneProjection::distance()`] and
+    /// [`PlaneProjection::distance_to_segment()`] are insufficient for your use case.
+    #[inline(always)]
+    pub fn project(&self, ll: LatLon) -> (f64, f64) {
+        (ll.0 * self.lat_scale, ll.1 * self.lon_scale)
+    }
+
     /// Square distance in meters between two points in (lat, lon) format.
     #[inline(always)]
     pub fn square_distance(&self, a: LatLon, b: LatLon) -> f64 {
