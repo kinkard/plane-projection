@@ -74,7 +74,7 @@ impl PlaneProjection {
 
     /// Square distance in meters from point to the segment.
     pub fn square_distance_to_segment(&self, point: LatLon, segment: (LatLon, LatLon)) -> f64 {
-        // Convert point and segment to projected space with origin at segment start
+        // Transform to local Cartesian coordinates with segment start as origin
         let mut point = (
             (point.0 - segment.0.0) * self.lat_scale,
             lon_diff(point.1, segment.0.1) * self.lon_scale,
@@ -84,16 +84,21 @@ impl PlaneProjection {
             lon_diff(segment.1.1, segment.0.1) * self.lon_scale,
         );
         if segment.0 != 0.0 || segment.1 != 0.0 {
+            // dot(point, segment) = |point| * |segment| * cos(alpha)
+            // dividing by |segment|^2 normalizes to range where 0.0=start, 1.0=end of segment
             let projection = (point.0 * segment.0 + point.1 * segment.1)
                 / (segment.0 * segment.0 + segment.1 * segment.1);
             if projection > 1.0 {
+                // adjust `point` vector to the end of segment
                 point.0 -= segment.0;
                 point.1 -= segment.1;
             } else if projection > 0.0 {
+                // adjust `point` vector so it starts at projected point
                 point.0 -= segment.0 * projection;
                 point.1 -= segment.1 * projection;
             }
         }
+        // Square length of vector from closest point on segment to original point
         point.0 * point.0 + point.1 * point.1
     }
 
