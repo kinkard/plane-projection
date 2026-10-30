@@ -1,8 +1,8 @@
 [package]
 name = "plane-projection"
-version = "0.3.6"
+version = "0.3.7"
 edition = "2024"
-rust-version = "1.85"
+rust-version = "1.94"
 description = "Zero-dependency fact approximate distance on Earth calculation"
 readme = "README.md"
 repository = "https://github.com/kinkard/plane-projection"
@@ -14,7 +14,7 @@ include = ["src/*.rs"]
 # No dependencies
 
 [dev-dependencies]
-criterion = { version = "0.6", default-features = false }
+criterion = { version = "0.8", default-features = false }
 
 [[bench]]
 name = "projection_benchmarks"
